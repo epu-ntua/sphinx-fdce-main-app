@@ -13,7 +13,7 @@
           <span aria-hidden="true">×</span></button>
         <h4 class="modal-title">Case Details</h4>
       </div>
-      <form action="/admin/create_case" class="form-horizontal" method=post enctype="multipart/form-data" >
+      <form id="create-case-form" action="/admin/create_case" class="form-horizontal" method=post enctype="multipart/form-data" >
       <div class="modal-body">
 
 
@@ -60,7 +60,8 @@
       <div class="modal-footer">
         <div class="btn-group">
             <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa  fa-close"></i> Close</button>
-            <button type="submit" class="btn btn-success"><i class="fa fa-edit"></i> Submit</button>
+            <!-- <button id="new_case_submit" type="button" class="btn btn-success"><i class="fa fa-edit"></i> Submit</button> -->
+            <button id="new_case_submit" style="background-color: green; color: white;" type="button" class="btn"><i class="fa fa-edit"></i> Submit New</button>
         </div>
       </div>
 
@@ -257,6 +258,42 @@ $('.case_card').hover(function(){
   //$(this).removeStyle("background-color");
 })
 */
+$('#new_case_submit').on('click' , function(){
+  console.log("here here")
+  var case_name=$('#edit_case_casename').val();
+  status_active
+  var case_status = "";
+  if ($('#status_active').is(":checked"))
+  {
+    case_status = "in progress"
+  }else{
+    case_status = "resolved"
+  }
+  to_send_kafka={
+    "case_name": case_name,
+    "status" : case_status
+  }
+  console.log("here here 2")
+  console.log(JSON.stringify(to_send_kafka))
+  $.ajax({
+      type: "POST",
+  	  url: "https://localhost/case/data/",
+      contentType: 'application/json;charset=UTF-8',
+      // data : JSON.stringify({'data': {} }),
+	    //success: success,
+      // contentType: 'text/plain;charset=UTF-8',
+	    data : JSON.stringify(to_send_kafka),
+      success: function(){
+        console.log("here here 4")
+          $('#create-case-form').submit();
+      },
+      error: function(){
+        console.log("here here 4")
+          $('#create-case-form').submit();
+      },
+	    })
+      console.log("here here 3")
+    })
 
 // when click on add case, reset the data on inputs for case dialog
 $('#cases_cards').on('click' , '#add_case_info' , function(){

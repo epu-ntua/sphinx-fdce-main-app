@@ -1285,6 +1285,25 @@ def graph_expand(case_id):
         return redirect(url_for('home_page'))
 
 
+#  -------------------------------------------------- Send case data to the supporting app to be sent to kafka
+@app.route('/case/data/', methods=["GET","POST"])
+def case_data():
+    if request.method == "POST":
+        print("------------- Data is --------------")
+        sys.stdout.flush()
+        print(request.json)
+        sys.stdout.flush()
+
+        url = 'http://127.0.0.1:5002/case/update/data/'
+        data_to_send = {'data': request.json}
+
+        x = requests.post(url, data = json.dumps(data_to_send), headers={"content-type" : "application/json"})
+        return Response(status=200)
+    else:
+        print("------------- Redirecting --------------")
+        sys.stdout.flush()
+        return redirect(url_for('home_page'))
+
 # -------------------------------------------------- Send timeline data to the supporting app to be sent to kafka
 @app.route('/timeline/data/', methods=["POST"])
 def timeline_data():
